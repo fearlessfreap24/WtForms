@@ -1,0 +1,15 @@
+{% from "_renderelement.html" import renderelement %}
+
+<html>
+    <head>
+        <title>Form Test</title>
+    </head>
+    <body>
+        <form method="POST" accept="{{ url_for('form') }}">
+            {{ form.csrf_token }}
+            {{ renderelement(form.username) }}
+            {{ renderelement(form.password) }}
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>
