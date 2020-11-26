@@ -1,15 +1,14 @@
+{% extends "base.html" %}
+
 {% from "_renderelement.html" import renderelement %}
 
-<html>
-    <head>
-        <title>Form Test</title>
-    </head>
-    <body>
+{% block title %}Form Test{% endblock %}
+    {% block body %}
         <form method="POST" accept="{{ url_for('form') }}">
             {{ form.csrf_token }}
             {{ renderelement(form.username) }}
             {{ renderelement(form.password) }}
+            {{ renderelement(form.email) }}
             <input type="submit" value="Submit">
         </form>
-    </body>
-</html>
+    {% endblock %}

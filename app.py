@@ -1,13 +1,24 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session
+from flask.helpers import url_for
+from werkzeug.utils import redirect
 from LoginForm import LoginForm as lf
 from pymongo import MongoClient
+from User import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisamajorsecret'
-dbuser = 'FLAKSADMIN'
-dbuserpw = ''
-MONGOURI = f'mongodb+srv://dylan:{dbuserpw}@cluster0.qqxpe.mongodb.net/<dbname>?retryWrites=true&w=majority'
+MONGOURI = f'mongodb://192.168.1.199:27017'
 mongo = MongoClient(MONGOURI)
+db = mongo.pymongotest
+# collection = users
+
+
+@app.route('/')
+def index():
+    if 'username' in session:
+        return f"You are logged in as {session['username']}"
+    else:
+        return form()
 
 
 @app.route('/form', methods=['GET', 'POST'])
