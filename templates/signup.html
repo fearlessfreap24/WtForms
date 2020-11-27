@@ -3,11 +3,21 @@
 
 {% block title %}Sign Up Page{% endblock %}
     {% block body %}
-        <form method="POST" accept="{{ url_for('form') }}">
+        <form method="POST" accept="{{ url_for('signup') }}">
             {{ form.csrf_token }}
-            {{ renderelement(form.username) }}
-            {{ renderelement(form.password) }}
+
+            {{ renderelement(form.fname) }}
+            {{ renderelement(form.lname) }}
             {{ renderelement(form.email) }}
+            {{ renderelement(form.password1) }}
+            {{ renderelement(form.password2) }}
+            {{ renderelement(form.username) }}
+            {{ renderelement(form.age) }}
+
             <input type="submit" value="Submit">
+
+            <div>
+                <h4>Already signed up? <a href="{{ url_for('form') }}">Click Here</a></h4>
+            </div>
         </form>
     {% endblock %}

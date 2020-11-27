@@ -49,7 +49,7 @@ def signup():
     if newuser.validate_on_submit():
         return ''
     
-    return render_template(url_for('signup.html'))
+    return render_template('signup.html', form=newuser)
 
 
 if __name__ == "__main__":
