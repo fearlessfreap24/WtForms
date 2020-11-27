@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "_renderelement.html" import renderelement %}
 
-{% block title %}Login Page{% endblock %}
+{% block title %}Sign Up Page{% endblock %}
     {% block body %}
         <form method="POST" accept="{{ url_for('form') }}">
             {{ form.csrf_token }}
