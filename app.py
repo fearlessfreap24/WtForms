@@ -73,8 +73,8 @@ def signup():
         uname = newuser.username.data
         age = int(newuser.age.data)
 
-        finduser = db.users.find_one({'fname': fname, 'lanme': lname, 'email': email})
-
+        finduser = db.users.find_one({"$or": [{"email": email}, {"username": uname}]})
+        print(finduser)
         if finduser == None:
             adduser = User(fname, lname, email, pw, uname, age).json()
             dbadd = db.users.insert_one(adduser)
@@ -85,7 +85,7 @@ def signup():
             error = 'User already exists'
             return render_template('signup.html', form=newuser, error=error)
 
-        return ''
+        # return ''
     
     return render_template('signup.html', form=newuser)
 
