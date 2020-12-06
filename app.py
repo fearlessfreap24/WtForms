@@ -64,7 +64,7 @@ def signup():
         if newuser.password1.data == newuser.password2.data:
             pw = bcrypt.hashpw(newuser.password1.data.encode(), bcrypt.gensalt())
         else:
-            error = 'Passwords do no match'
+            error = 'Passwords do not match'
             return render_template('signup.html', form=newuser, error=error)
 
         fname = newuser.fname.data
@@ -79,7 +79,8 @@ def signup():
             adduser = User(fname, lname, email, pw, uname, age).json()
             dbadd = db.users.insert_one(adduser)
             if dbadd:
-                return f"User {fname} {lname} has been added"
+                error = f"User {fname} {lname} has been added"
+                return render_template('signup.html', form=newuser, error=error)
         else:
             error = 'User already exists'
             return render_template('signup.html', form=newuser, error=error)
