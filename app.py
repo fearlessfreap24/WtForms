@@ -1,17 +1,24 @@
-import bcrypt
-from flask import Flask, render_template, session, url_for, redirect
+from flask import Flask, render_template, session, url_for, redirect, request
 from LoginForm import LoginForm as lf
 from pymongo import MongoClient
 from User import User, NewUser
-from flask_bcrypt import Bcrypt
+# from flask_bcrypt import Bcrypt
+import bcrypt
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-flask_bcrypt = Bcrypt(app)
 app.config['SECRET_KEY'] = os.urandom(20)
-MONGOURI = f'mongodb://192.168.1.199:27017'
-mongo = MongoClient(MONGOURI)
-db = mongo.pymongotest
+# flask_bcrypt = Bcrypt(app)
+DBUSER = os.getenv("DBUSER")
+DBPWD = os.getenv("DBPWD")
+client = MongoClient('192.168.1.199',
+                    username=DBUSER,
+                    password= DBPWD,
+                    authSource='pymongotest')
+db = client.pymongotest
 # collection = users
 
 
@@ -29,9 +36,16 @@ def form():
     form = lf()
 
     if form.validate_on_submit():
-        pwhash = flask_bcrypt.generate_password_hash(password=form.password.data)
-        session['username'] = form.username.data
-        return redirect(url_for('index'))
+        
+        finduser = db.users.find_one({"username": form.username.data })
+        if finduser == None:
+            return "No user found"
+        elif bcrypt.checkpw(form.password.data.encode(), finduser["password"]):
+            session['username'] = form.username.data
+            return redirect(url_for('index'))
+        else:
+            return "Passwords do not match"
+
     return render_template('form.html', form=form)
 
 
@@ -47,10 +61,33 @@ def signup():
     newuser = NewUser()
 
     if newuser.validate_on_submit():
+        if newuser.password1.data == newuser.password2.data:
+            pw = bcrypt.hashpw(newuser.password1.data.encode(), bcrypt.gensalt())
+        else:
+            error = 'Passwords do no match'
+            return render_template('signup.html', form=newuser, error=error)
+
+        fname = newuser.fname.data
+        lname = newuser.lname.data
+        email = newuser.email.data
+        uname = newuser.username.data
+        age = int(newuser.age.data)
+
+        finduser = db.users.find_one({'fname': fname, 'lanme': lname, 'email': email})
+
+        if finduser == None:
+            adduser = User(fname, lname, email, pw, uname, age).json()
+            dbadd = db.users.insert_one(adduser)
+            if dbadd:
+                return f"User {fname} {lname} has been added"
+        else:
+            error = 'User already exists'
+            return render_template('signup.html', form=newuser, error=error)
+
         return ''
     
     return render_template('signup.html', form=newuser)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

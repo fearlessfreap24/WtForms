@@ -3,9 +3,11 @@
 
 {% block title %}Sign Up Page{% endblock %}
     {% block body %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
         <form method="POST" accept="{{ url_for('signup') }}">
             {{ form.csrf_token }}
-
             {{ renderelement(form.fname) }}
             {{ renderelement(form.lname) }}
             {{ renderelement(form.email) }}

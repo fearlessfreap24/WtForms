@@ -4,13 +4,15 @@ from wtforms import StringField, PasswordField, IntegerField
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 import pymongo
 
-class User():
-    fname = ''
-    lname = ''
-    email = ''
-    password = ''
-    username = ''
-    age = 0
+class User:
+
+    def __init__(self, fname, lname, email, password, username, age):
+        self.fname = fname
+        self.lname = lname
+        self.email = email
+        self.password = password
+        self.username = username
+        self.age = age
 
     def json(User):
         user = {
