@@ -22,7 +22,7 @@ client = MongoClient('192.168.1.199',
                     authSource='pymongotest')
 db = client.pymongotest
 # collection = users
-app.config['SESSION_MONGODB'] = db
+app.config['SESSION_MONGODB'] = client
 app.config['SESSION_MONGODB_DB'] = 'pymongotest'
 app.config['SESSION_MONGODB_COLLECT'] = 'sessions'
 Session(app)
