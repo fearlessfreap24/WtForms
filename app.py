@@ -6,11 +6,13 @@ from User import User, NewUser
 import bcrypt
 import os
 from dotenv import load_dotenv
+from flask_session import Session
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(20)
+app.config['SESSION_TYPE'] = "mongodb"
 # flask_bcrypt = Bcrypt(app)
 DBUSER = os.getenv("DBUSER")
 DBPWD = os.getenv("DBPWD")
@@ -20,6 +22,10 @@ client = MongoClient('192.168.1.199',
                     authSource='pymongotest')
 db = client.pymongotest
 # collection = users
+app.config['SESSION_MONGODB'] = db
+app.config['SESSION_MONGODB_DB'] = 'pymongotest'
+app.config['SESSION_MONGODB_COLLECT'] = 'sessions'
+Session(app)
 
 
 @app.route('/')
